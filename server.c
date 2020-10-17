@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
     }
 
     // Forcefully attaching socket to the port 8080 //
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR|SO_REUSEPORT ,
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT ,
                                                   &opt, sizeof(opt)))
     {
         perror("setsockopt");
@@ -48,29 +48,31 @@ int main(int argc, char const *argv[])
         perror("listen");
         exit(EXIT_FAILURE);
     }
-
-    pid_t pid;
-    pid = fork();
-    int ch;
-    if(pid == 0){
-        printf("child pid: %d\n", getpid());
-        if(!setuid(2)){
-        printf("setuid successfully!\n");
-         if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
+    printf("waiting for client mess \n");
+     if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
                        (socklen_t*)&addrlen))<0)
             {
                 perror("accept");
                 exit(EXIT_FAILURE);
             }
-        valread = read( new_socket , buffer, 1024);
-        printf("%s\n",buffer );
-        send(new_socket , hello , strlen(hello) , 0 );
-        printf("Hello message sent\n");
+    pid_t pid;
+    pid = fork();
+    int ch;
+    if(pid == 0){
+        printf("child pid: %d\n", getpid());
+        if(!setuid(5888)){
+            printf("setuid successfully!\n");
+        
+            valread = read( new_socket , buffer, 1024);
+            printf("%s\n",buffer );
+            send(new_socket , hello , strlen(hello) , 0 );
+            printf("Hello message sent\n");
         }else{
-        printf("setuid error!");
-        perror("setuid");
+            printf("setuid error!");
+            perror("setuid");
         }
-       
+    }else if(pid == -1){
+        printf("Error while calling the fork function \n");
     }else{
         printf("father pid: %d\n", getpid());
         wait(&ch);
