@@ -5,4 +5,4 @@
 ### 2, sudo ./server (coz setuid() need root privilege)
 ### 3, ./client
 
-## team member:Yilin Zhou
+## no team member
